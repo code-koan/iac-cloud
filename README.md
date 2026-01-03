@@ -7,3 +7,4 @@
 
 ## 秘钥管理
 基于 [TFstate.dev](https://tfstate.dev/) 管理 terraform state 秘钥
+通过 `terraform state pull` 拉取远端 state
