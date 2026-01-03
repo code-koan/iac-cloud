@@ -17,6 +17,9 @@
 export TF_VAR_secret_id="xxx"
 export TF_VAR_secret_key="xxx"
 
+# state 管理，借助 github 管理；如果不需要 管理 state ，需注释掉 main.tf 中的 backend 模块
+export TF_HTTP_PASSWORD="你的GitHub Token" 
+
 terraform init
 terraform plan
 terraform apply -auto-approve

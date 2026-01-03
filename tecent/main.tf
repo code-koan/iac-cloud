@@ -5,6 +5,15 @@ terraform {
       version = "~> 1.81.0"
     }
   }
+  # state 管理
+  backend "http" {
+    address        = "https://api.tfstate.dev/github/v1"
+    lock_address   = "https://api.tfstate.dev/github/v1/lock"
+    unlock_address = "https://api.tfstate.dev/github/v1/lock"
+    lock_method    = "PUT"
+    unlock_method  = "DELETE"
+    username       = "code-koan/iac-cloud"
+  }
 }
 
 provider "tencentcloud" {
