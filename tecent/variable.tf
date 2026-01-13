@@ -34,8 +34,8 @@ variable "key_pair_name" {
 
 # 自动 ssh 私钥配置
 locals {
-#   private_key_base64 = base64encode(file("~/.ssh/id_rsa"))
-  private_key_base64 = "123"
+  private_key_base64 = base64encode(file("~/.ssh/id_rsa"))
+#   private_key_base64 = "123"
 
   user_data = base64encode(templatefile("${path.module}/scripts/user-data.sh", {
     container_port      = 7290,
