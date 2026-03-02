@@ -1,0 +1,23 @@
+{
+  "skill_name": "tencent-spot-deploy",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我在腾讯云上需要一个开发服务器，预装 Docker，帮我用 Terraform 部署",
+      "expected_output": "Ask for secret_id and secret_key, provide Terraform config or module reference, run terraform init/plan/apply",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我想在腾讯云新加坡区创建一个 4核8G 的 spot 实例，用来跑 Docker 服务",
+      "expected_output": "Gather credentials, create Terraform config with custom instance_type, deploy",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "帮我用 terraform 在腾讯云部署一个服务器，需要能 ssh 登录并且安装好 docker",
+      "expected_output": "Generate Terraform files with user-data.sh for Docker installation, handle SSH key",
+      "files": []
+    }
+  ]
+}
