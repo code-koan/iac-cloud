@@ -34,7 +34,7 @@ resource "alicloud_security_group_rule" "allow_ssh" {
   cidr_ip           = "0.0.0.0/0"
   ip_protocol       = "tcp"
   port_range        = "22/22"
-  policy            = "accept"
+  policy            = "Accept"
 }
 
 resource "alicloud_security_group_rule" "allow_http" {
@@ -43,12 +43,7 @@ resource "alicloud_security_group_rule" "allow_http" {
   cidr_ip           = "0.0.0.0/0"
   ip_protocol       = "tcp"
   port_range        = "80/443,8000/8000"
-  policy            = "accept"
-}
-
-resource "alicloud_key_pair" "ssh_key" {
-  key_name   = "gpu-study-key"
-  public_key = file(var.ssh_public_key_file)
+  policy            = "Accept"
 }
 
 resource "alicloud_instance" "gpu_instance" {
@@ -56,7 +51,6 @@ resource "alicloud_instance" "gpu_instance" {
   instance_type   = var.instance_type
   vswitch_id      = alicloud_vswitch.main_vswitch.id
   security_groups = [alicloud_security_group.gpu_sg.id]
-  key_name        = alicloud_key_pair.ssh_key.key_name
 
   image_id    = "aliyun_2_1903_x64_20G_alibase_20230109.bin"
   system_disk_category = "cloud_efficiency"

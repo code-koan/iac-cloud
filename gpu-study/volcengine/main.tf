@@ -12,59 +12,40 @@ provider "volcengine" {
 }
 
 resource "volcengine_vpc" "main_vpc" {
-  name       = "gpu-vpc"
+  vpc_name  = "gpu-vpc"
   cidr_block = "10.0.0.0/16"
 }
 
 resource "volcengine_subnet" "main_subnet" {
-  name       = "gpu-subnet"
+  subnet_name = "gpu-subnet"
   cidr_block = "10.0.1.0/24"
   vpc_id     = volcengine_vpc.main_vpc.id
   zone_id    = "${var.region}-01"
 }
 
 resource "volcengine_security_group" "gpu_sg" {
-  name        = "gpu-security-group"
-  description = "允许 SSH、HTTP、HTTPS"
-  vpc_id      = volcengine_vpc.main_vpc.id
+  security_group_name = "gpu-security-group"
+  description         = "允许 SSH、HTTP、HTTPS"
+  vpc_id              = volcengine_vpc.main_vpc.id
 }
 
-resource "volcengine_security_group_rule" "allow_ssh" {
-  security_group_id = volcengine_security_group.gpu_sg.id
-  type              = "ingress"
-  cidr_ip           = "0.0.0.0/0"
-  protocol          = "tcp"
-  port_range        = "22/22"
-  policy            = "accept"
+resource "volcengine_ecs_key_pair" "ssh_key" {
+  key_pair_name = "gpu-study-key"
+  public_key    = file(var.ssh_public_key_file)
 }
 
-resource "volcengine_security_group_rule" "allow_http" {
-  security_group_id = volcengine_security_group.gpu_sg.id
-  type              = "ingress"
-  cidr_ip           = "0.0.0.0/0"
-  protocol          = "tcp"
-  port_range        = "80/443,8000/8000"
-  policy            = "accept"
-}
+resource "volcengine_ecs_instance" "gpu_instance" {
+  instance_name       = var.instance_name
+  instance_type       = var.instance_type
+  subnet_id           = volcengine_subnet.main_subnet.id
+  security_group_ids  = [volcengine_security_group.gpu_sg.id]
+  key_pair_name      = volcengine_ecs_key_pair.ssh_key.key_pair_name
 
-resource "volcengine_ssh_key_pair" "ssh_key" {
-  key_name   = "gpu-study-key"
-  public_key = file(var.ssh_public_key_file)
-}
+  image_id            = "image-yq2k8p6k9gvp7c0l"
+  system_volume_type  = "ESSD_PL0"
+  system_volume_size  = 40
 
-resource "volcengine_instance" "gpu_instance" {
-  instance_name         = var.instance_name
-  instance_type        = var.instance_type
-  subnet_id            = volcengine_subnet.main_subnet.id
-  security_group_ids   = [volcengine_security_group.gpu_sg.id]
-  key_name             = volcengine_ssh_key_pair.ssh_key.key_name
-
-  image_id             = "image-yq2k8p6k9gvp7c0l"
-  system_volume_type   = "ESSD_PL0"
-  system_volume_size   = 40
-
-  internet_max_bandwidth_out = 100
-  internet_charge_type      = "PostPaidByTraffic"
+  instance_charge_type = "PostPaid"
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
@@ -78,10 +59,10 @@ resource "volcengine_instance" "gpu_instance" {
 
 output "ssh_command" {
   description = "SSH 连接命令"
-  value       = "ssh root@${volcengine_instance.gpu_instance.public_ip}"
+  value       = "ssh root@${volcengine_ecs_instance.gpu_instance.primary_ip_address}"
 }
 
 output "instance_id" {
   description = "实例 ID"
-  value       = volcengine_instance.gpu_instance.id
+  value       = volcengine_ecs_instance.gpu_instance.id
 }
