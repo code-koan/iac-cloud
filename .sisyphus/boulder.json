@@ -1,0 +1,10 @@
+{
+  "active_plan": "/Users/apple/local-dev/iac-cloud/.sisyphus/plans/ssh-key-config.md",
+  "started_at": "2026-03-08T11:00:27.617Z",
+  "session_ids": [
+    "ses_33320b66dffeP3581rnpJA2qwN"
+  ],
+  "plan_name": "ssh-key-config",
+  "agent": "atlas",
+  "worktree_path": "/Users/apple/local-dev/iac-cloud"
+}
