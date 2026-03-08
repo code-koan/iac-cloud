@@ -47,11 +47,17 @@ resource "volcengine_security_group_rule" "allow_http" {
   policy            = "accept"
 }
 
+resource "volcengine_ssh_key_pair" "ssh_key" {
+  key_name   = "gpu-study-key"
+  public_key = file(var.ssh_public_key_file)
+}
+
 resource "volcengine_instance" "gpu_instance" {
   instance_name         = var.instance_name
   instance_type        = var.instance_type
   subnet_id            = volcengine_subnet.main_subnet.id
   security_group_ids   = [volcengine_security_group.gpu_sg.id]
+  key_name             = volcengine_ssh_key_pair.ssh_key.key_name
 
   image_id             = "image-yq2k8p6k9gvp7c0l"
   system_volume_type   = "ESSD_PL0"

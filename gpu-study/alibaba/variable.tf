@@ -15,3 +15,9 @@ variable "instance_name" {
   type        = string
   default     = "gpu-llm-training"
 }
+
+variable "ssh_public_key_file" {
+  description = "SSH 公钥文件路径"
+  type        = string
+  default     = "~/.ssh/id_rsa.pub"
+}

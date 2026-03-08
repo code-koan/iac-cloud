@@ -46,11 +46,17 @@ resource "alicloud_security_group_rule" "allow_http" {
   policy            = "Accept"
 }
 
+resource "alicloud_key_pair" "ssh_key" {
+  key_name   = "gpu-study-key"
+  public_key = file(var.ssh_public_key_file)
+}
+
 resource "alicloud_instance" "gpu_instance" {
   instance_name   = var.instance_name
   instance_type   = var.instance_type
   vswitch_id      = alicloud_vswitch.main_vswitch.id
   security_groups = [alicloud_security_group.gpu_sg.id]
+  key_name        = alicloud_key_pair.ssh_key.key_name
 
   image_id    = "aliyun_2_1903_x64_20G_alibase_20230109.bin"
   system_disk_category = "cloud_efficiency"
