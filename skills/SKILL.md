@@ -69,16 +69,16 @@ npx skills add git@github.com:owner/repo.git
 
 ```bash
 # 安装到 OpenCode
-npx skills add apple/iac-cloud --agent opencode
+npx skills add code-koan/iac-cloud --agent opencode
 
 # 安装到 Claude Code
-npx skills add apple/iac-cloud --agent claude-code
+npx skills add code-koan/iac-cloud --agent claude-code
 
 # 安装到 Codex
-npx skills add apple/iac-cloud --agent codex
+npx skills add code-koan/iac-cloud --agent codex
 
 # 同时安装到多个代理
-npx skills add apple/iac-cloud --agent opencode --agent claude-code
+npx skills add code-koan/iac-cloud --agent opencode --agent claude-code
 ```
 
 ## Overview
