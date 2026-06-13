@@ -1,11 +1,11 @@
 output "cluster_id" {
   description = "ACS 集群 ID"
-  value       = alicloud_cs_serverless_kubernetes.this.id
+  value       = alicloud_cs_managed_kubernetes.this.id
 }
 
 output "cluster_endpoint" {
   description = "API Server 地址（公网，若开启）"
-  value       = try(data.alicloud_cs_cluster_credential.this.cluster_name, alicloud_cs_serverless_kubernetes.this.name)
+  value       = try(data.alicloud_cs_cluster_credential.this.cluster_name, alicloud_cs_managed_kubernetes.this.name)
 }
 
 output "vpc_id" {

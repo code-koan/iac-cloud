@@ -19,5 +19,6 @@ validate:
 
 lint-install:
 	git config core.hooksPath .githooks
-	chmod +x .githooks/*
-	@echo "✓ git hooks installed (.githooks/)"
+	chmod +x .githooks/pre-commit
+	@echo "✓ git hooks installed (.githooks/pre-commit: fmt-check)"
+	@echo "  validate / plan 由 CI 负责，不入 hook（避免 provider 下载阻塞 push）"

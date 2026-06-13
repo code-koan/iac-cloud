@@ -58,3 +58,41 @@ iac-cloud/
 - 远程 state path 必须唯一：`<cloud>-<resource>`（如 `alibaba-ack`、`alibaba-acs`），避免和已有模板冲突
 - 同步注册到 `.config/<cloud>/_index.md` + `.config/_index.md`
 - `terraform init` 撞 registry 抖动时，复用兄弟模块缓存：`terraform init -backend=false -plugin-dir=../<sibling>/.terraform/providers`
+
+## 开发排障速查
+
+### Provider 下载卡 github（典型：aliyun/alicloud）
+
+`alicloud` provider zip ~60M+，国内直连 github 常 i/o timeout 或 EOF。**`network_mirror` 不解决**（只代理元数据，archive URL 仍指 github），**`plugin_cache_dir` 也不解决**（只是下载完顺手存一份，仍需先成功下载）。
+
+**唯一离线方案：`filesystem_mirror`**。手动放 binary 到本地 mirror，terraform 直接从磁盘加载，零网络请求。
+
+```hcl
+# ~/.terraformrc
+plugin_cache_dir   = "$HOME/.terraform.d/plugin-cache"
+disable_checkpoint = true
+
+provider_installation {
+    filesystem_mirror {
+        path    = "/home/<user>/.terraform.d/plugins"
+        include = ["registry.terraform.io/*/*"]
+    }
+    network_mirror {
+        url     = "https://terraform-registry-mirror.ru/"
+        include = ["registry.terraform.io/*/*"]
+    }
+    direct { exclude = ["registry.terraform.io/*/*"] }
+}
+```
+
+放置 binary 的目录结构（严格遵守，否则 terraform 找不到）：
+
+```
+~/.terraform.d/plugins/registry.terraform.io/<namespace>/<name>/<version>/<os>_<arch>/terraform-provider-<name>_v<version>
+```
+
+例：`registry.terraform.io/aliyun/alicloud/1.281.0/linux_amd64/terraform-provider-alicloud_v1.281.0`
+
+获取 binary 的两条路：
+1. 有网环境跑 `terraform providers mirror ~/.terraform.d/plugins` 一次性同步当前模块所有依赖
+2. 手动从 github releases 下载 zip → unzip 到上述目录 → `chmod +x`

@@ -28,7 +28,7 @@ kubectl get nodes
 
 - `enable_default_node_pool` / `default_pool`
 - `enable_gpu_node_pool` / `gpu_pool`（GPU 节点带 `nvidia.com/gpu` taint）
-- `addons` — 默认 `[{name="gateway-api"}]`
+- `addons` — 默认启用 `gateway-api` + `alb-ingress-controller`；监控/告警/日志/安全等组件预置但 `disabled=true`，按需开启。完整列表见 [ACK 组件总览](https://help.aliyun.com/zh/ack/product-overview/component-overview)
 - `key_name` — 节点 SSH 密钥对（可选）
 
 ## 销毁

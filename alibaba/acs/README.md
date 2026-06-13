@@ -26,9 +26,24 @@ kubectl get ns
 
 详见 [../../.config/alibaba/acs.md](../../.config/alibaba/acs.md)。
 
-- `acs_pro` — Pro 版开关，`gateway-api` addon 必须 Pro
-- `addons` — 默认 `[{name="gateway-api"}]`
+- `acs_pro` — Pro 版开关（`true=ack.pro.small` / `false=ack.standard`）
+- `addons` — 默认仅启用 `gateway-api`；其余组件（metrics-server / arms-prometheus / alicloud-monitor-controller / logtail-ds 等）预置但 `disabled=true`，按需开启。完整列表见 [阿里云组件总览](https://help.aliyun.com/zh/cs/user-guide/component-overview)
 - `zone_ids` — 至少 2 个可用区
+
+## 开启可选 addon 示例
+
+```bash
+# 临时打开监控全家桶
+terraform apply \
+  -var='addons=[
+    {"name":"gateway-api"},
+    {"name":"metrics-server"},
+    {"name":"arms-prometheus"},
+    {"name":"alicloud-monitor-controller"}
+  ]'
+```
+
+> ACS Serverless 的 **CoreDNS / kube-proxy / CSI** 由控制面托管，不在 addons 暴露，PVC / Service DNS 直接可用。
 
 ## 销毁
 

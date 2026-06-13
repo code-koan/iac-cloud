@@ -37,10 +37,8 @@ data "alicloud_zones" "default" {
 }
 
 locals {
-  addon_names     = [for a in var.addons : a.name if !a.disabled]
-  has_gateway_api = contains(local.addon_names, "gateway-api")
-  pro_required    = local.has_gateway_api
-  cluster_spec    = var.acs_pro ? "ack.pro.small" : "ack.standard"
+  addon_names  = [for a in var.addons : a.name if !a.disabled]
+  cluster_spec = var.acs_pro ? "ack.pro.small" : "ack.standard"
 
   # zone_ids 留空时，按 region 自动取前 3 个可用区
   effective_zone_ids = length(var.zone_ids) > 0 ? var.zone_ids : slice(
@@ -52,10 +50,6 @@ locals {
 
 resource "terraform_data" "validate" {
   lifecycle {
-    precondition {
-      condition     = !(local.pro_required && !var.acs_pro)
-      error_message = "addons 中包含 gateway-api 需要 acs_pro = true（ACS Pro 版）。"
-    }
     precondition {
       condition     = length(local.effective_zone_ids) >= 2
       error_message = "ACS 至少需要 2 个可用区，但当前 region 自动解析到的可用区不足 2 个，请显式传 zone_ids。"
@@ -80,17 +74,17 @@ resource "alicloud_vswitch" "cluster_vswitch" {
 }
 
 # ----------------------------------------------------------------------------
-# Serverless K8s 集群
+# ACS 集群（基于统一资源 alicloud_cs_managed_kubernetes，profile=Acs）
 # ----------------------------------------------------------------------------
-resource "alicloud_cs_serverless_kubernetes" "this" {
-  name                           = var.cluster_name
-  cluster_spec                   = local.cluster_spec
-  vpc_id                         = alicloud_vpc.main_vpc.id
-  vswitch_ids                    = alicloud_vswitch.cluster_vswitch[*].id
-  service_cidr                   = var.service_cidr
-  endpoint_public_access_enabled = var.endpoint_public_access
-  time_zone                      = var.time_zone
-  deletion_protection            = var.deletion_protection
+resource "alicloud_cs_managed_kubernetes" "this" {
+  name                 = var.cluster_name
+  profile              = "Acs"
+  cluster_spec         = local.cluster_spec
+  vswitch_ids          = alicloud_vswitch.cluster_vswitch[*].id
+  service_cidr         = var.service_cidr
+  slb_internet_enabled = var.endpoint_public_access
+  timezone             = var.time_zone
+  deletion_protection  = var.deletion_protection
 
   dynamic "addons" {
     for_each = { for a in var.addons : a.name => a if !a.disabled }
@@ -100,6 +94,17 @@ resource "alicloud_cs_serverless_kubernetes" "this" {
     }
   }
 
+  # destroy 时连带清理集群拉起的 SLB / ALB，避免残留 ENI 把 vSwitch 锁住
+  # （需先 apply 写入集群配置；ALB 默认 retain，必须显式改 delete）
+  delete_options {
+    delete_mode   = "delete"
+    resource_type = "SLB"
+  }
+  delete_options {
+    delete_mode   = "delete"
+    resource_type = "ALB"
+  }
+
   depends_on = [terraform_data.validate]
 }
 
@@ -107,7 +112,7 @@ resource "alicloud_cs_serverless_kubernetes" "this" {
 # kubeconfig 落盘
 # ----------------------------------------------------------------------------
 data "alicloud_cs_cluster_credential" "this" {
-  cluster_id = alicloud_cs_serverless_kubernetes.this.id
+  cluster_id = alicloud_cs_managed_kubernetes.this.id
 }
 
 resource "local_sensitive_file" "kubeconfig" {
