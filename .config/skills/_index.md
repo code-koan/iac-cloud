@@ -6,7 +6,8 @@ AI 可安装 skill 定义。
 
 | 文件 | 说明 |
 |------|------|
-| [skills/SKILL.md](../../skills/SKILL.md) | tencent-spot-deploy skill：腾讯云抢+实例部署工作流 |
+| [skills/SKILL.md](../../skills/SKILL.md) | tencent-spot-deploy skill：腾讯云抢+实例部署工作流（可发布） |
+| [.claude/skills/new-tf-module/SKILL.md](../../.claude/skills/new-tf-module/SKILL.md) | 项目内部 skill：新增云资源 Terraform 模板的标准化骨架 |
 
 ## 设计说明
 

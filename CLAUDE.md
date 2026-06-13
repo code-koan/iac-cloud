@@ -50,3 +50,11 @@ iac-cloud/
 - 禁止硬编码密钥 → `export TF_VAR_*`
 - 使用 `tfstate.dev` 远程管理 state
 - 禁止提交 `.tfstate` 文件
+
+## 模块新增约定
+
+- 新增云资源模板时，优先调用 `.claude/skills/new-tf-module/`（自动生成骨架 + state path + 索引同步 + validate）
+- 每个云资源 = 一个独立子目录（`<cloud>/<resource>/`，含 `main.tf` / `variable.tf` / `output.tf` / `README.md`）；禁止在仓库根或 `<cloud>/` 根直接放散落 `.tf` 文件
+- 远程 state path 必须唯一：`<cloud>-<resource>`（如 `alibaba-ack`、`alibaba-acs`），避免和已有模板冲突
+- 同步注册到 `.config/<cloud>/_index.md` + `.config/_index.md`
+- `terraform init` 撞 registry 抖动时，复用兄弟模块缓存：`terraform init -backend=false -plugin-dir=../<sibling>/.terraform/providers`
