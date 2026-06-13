@@ -30,6 +30,10 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# Generated kubeconfig (落盘到模板目录)
+alibaba/ack/kubeconfig
+alibaba/acs/kubeconfig
+
 
 # =========================
 # Environment / Secrets

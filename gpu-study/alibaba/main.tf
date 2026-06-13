@@ -58,7 +58,7 @@ resource "alicloud_instance" "gpu_instance" {
   security_groups = [alicloud_security_group.gpu_sg.id]
   key_name        = alicloud_key_pair.ssh_key.key_name
 
-  image_id    = "aliyun_2_1903_x64_20G_alibase_20230109.bin"
+  image_id             = "aliyun_2_1903_x64_20G_alibase_20230109.bin"
   system_disk_category = "cloud_efficiency"
   system_disk_size     = 40
 

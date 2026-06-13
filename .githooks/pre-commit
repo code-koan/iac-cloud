@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Terraform fmt — 仅检查暂存的 .tf 文件
+set -e
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.tf$' || true)
+[ -z "$files" ] && exit 0
+
+if ! command -v terraform >/dev/null 2>&1; then
+  echo "⚠️  terraform 未安装，跳过 fmt 检查"
+  exit 0
+fi
+
+unfmt=$(echo "$files" | xargs terraform fmt -check -diff 2>&1) || {
+  echo "❌ Terraform fmt 不规范，运行: terraform fmt -recursive"
+  echo "$unfmt"
+  exit 1
+}

@@ -82,13 +82,13 @@ resource "tencentcloud_key_pair" "ssh_key" {
 }
 
 resource "tencentcloud_instance" "docker_spot_instance" {
-  instance_name     = var.instance_name
-  availability_zone = var.availability_zone
-  image_id          = data.tencentcloud_images.ubuntu.images[0].image_id
-  instance_type     = var.instance_type
-  key_ids           = [tencentcloud_key_pair.ssh_key.id]
-  orderly_security_groups = [tencentcloud_security_group.docker_sg.id]
-  subnet_id         = tencentcloud_subnet.main_subnet.id
+  instance_name              = var.instance_name
+  availability_zone          = var.availability_zone
+  image_id                   = data.tencentcloud_images.ubuntu.images[0].image_id
+  instance_type              = var.instance_type
+  key_ids                    = [tencentcloud_key_pair.ssh_key.id]
+  orderly_security_groups    = [tencentcloud_security_group.docker_sg.id]
+  subnet_id                  = tencentcloud_subnet.main_subnet.id
   internet_max_bandwidth_out = 100
 
   instance_charge_type = "SPOTPAID"
@@ -100,8 +100,8 @@ resource "tencentcloud_instance" "docker_spot_instance" {
 
   user_data = local.user_data
 
-  internet_charge_type       = "TRAFFIC_POSTPAID_BY_HOUR"  # 按小时流量计费
-  allocate_public_ip         = true                        # 自动分配公网 IP
+  internet_charge_type = "TRAFFIC_POSTPAID_BY_HOUR" # 按小时流量计费
+  allocate_public_ip   = true                       # 自动分配公网 IP
 
   tags = {
     Name         = var.instance_name

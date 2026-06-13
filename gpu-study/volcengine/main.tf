@@ -12,15 +12,15 @@ provider "volcengine" {
 }
 
 resource "volcengine_vpc" "main_vpc" {
-  vpc_name  = "gpu-vpc"
+  vpc_name   = "gpu-vpc"
   cidr_block = "10.0.0.0/16"
 }
 
 resource "volcengine_subnet" "main_subnet" {
   subnet_name = "gpu-subnet"
-  cidr_block = "10.0.1.0/24"
-  vpc_id     = volcengine_vpc.main_vpc.id
-  zone_id    = "${var.region}-01"
+  cidr_block  = "10.0.1.0/24"
+  vpc_id      = volcengine_vpc.main_vpc.id
+  zone_id     = "${var.region}-01"
 }
 
 resource "volcengine_security_group" "gpu_sg" {
@@ -35,15 +35,15 @@ resource "volcengine_ecs_key_pair" "ssh_key" {
 }
 
 resource "volcengine_ecs_instance" "gpu_instance" {
-  instance_name       = var.instance_name
-  instance_type       = var.instance_type
-  subnet_id           = volcengine_subnet.main_subnet.id
-  security_group_ids  = [volcengine_security_group.gpu_sg.id]
+  instance_name      = var.instance_name
+  instance_type      = var.instance_type
+  subnet_id          = volcengine_subnet.main_subnet.id
+  security_group_ids = [volcengine_security_group.gpu_sg.id]
   key_pair_name      = volcengine_ecs_key_pair.ssh_key.key_pair_name
 
-  image_id            = "image-yq2k8p6k9gvp7c0l"
-  system_volume_type  = "ESSD_PL0"
-  system_volume_size  = 40
+  image_id           = "image-yq2k8p6k9gvp7c0l"
+  system_volume_type = "ESSD_PL0"
+  system_volume_size = 40
 
   instance_charge_type = "PostPaid"
 

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# 对每个含 .tf 的模块目录跑 terraform validate
+exec "$(dirname "$0")/lib/validate-all.sh"
