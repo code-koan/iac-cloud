@@ -93,15 +93,18 @@ variable "addons" {
     { name = "alb-ingress-controller" }, # ALB Ingress Controller（基于 ALB 的 K8s Ingress 实现）
 
     # ---- 监控（Observability - Metrics） ----
-    { name = "metrics-server" },                             # HPA / kubectl top 必备
-    { name = "arms-prometheus" },                            # 阿里云 Prometheus（ARMS）
+    { name = "metrics-server" },         # HPA / kubectl top 必备
+    { name = "arms-prometheus" },        # 阿里云 Prometheus（ARMS）
+    { name = "alibaba-log-controller" }, # 阿里云 Prometheus（ARMS）
+    { name = "managed-coredns" },        # 阿里云 Prometheus（ARMS）
+
     { name = "ack-node-problem-detector", disabled = true }, # 节点/Pod 异常事件上报
 
     # ---- 告警 / 事件（Alerting） ----
     { name = "alicloud-monitor-controller", disabled = true }, # 云监控告警 + 事件中心
 
     # ---- 日志（Logging） ----
-    { name = "logtail-ds" }, # SLS 日志采集（ACS 上需配合 Pod 注解，DaemonSet 形态受限）
+    # { name = "logtail-ds" }, # SLS 日志采集（ACS 上需配合 Pod 注解，DaemonSet 形态受限）
 
     { name = "ack-workflow" }, # SLS 日志采集（ACS 上需配合 Pod 注解，DaemonSet 形态受限）
 
