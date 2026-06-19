@@ -26,6 +26,9 @@ override.tf.json
 *_override.tf
 *_override.tf.json
 
+# Provider 离线包（filesystem_mirror 用）
+*.zip
+
 # CLI configuration files
 .terraformrc
 terraform.rc

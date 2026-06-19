@@ -15,10 +15,16 @@
 ## 贡献者上手
 
 ```bash
-# 安装本仓库的 git hooks（fmt on commit, validate on push）
+# 安装本仓库的 git hooks（仅 fmt-check on commit）
 make lint-install
 
 # 平时开发
 make fmt           # 自动格式化
 make lint          # fmt-check + validate 全仓
 ```
+
+> git hook 只跑 fmt（轻量、纯本地）。`terraform validate` 依赖 provider 下载，不进 hook，由 CI 跑。
+
+## TODO
+
+- [ ] **CI**：加 GitHub Actions，PR 触发 `terraform fmt -check` + `terraform validate` + `terraform plan`（dummy 凭证或只读 AK），覆盖所有 `.tf` 模块。Hook 删除后这是回归保护的唯一手段。

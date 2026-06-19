@@ -28,7 +28,35 @@ VPC (10.0.0.0/16)
 | `default_pool` | object | `ecs.g6.large × 2, 60GB` | |
 | `enable_gpu_node_pool` | bool | `false` | |
 | `gpu_pool` | object | `ecs.gn6i-c4g1.xlarge × 1, 100GB` | |
-| `addons` | list(object) | `[{name="gateway-api"}]` | |
+| `addons` | list(object) | 见下表 | 默认启用 ALB Ingress + Gateway API；其余预置但 `disabled=true` |
+
+### 预置 addon 速查
+
+| 组件 | 类别 | 默认 | 用途 |
+|------|------|------|------|
+| `gateway-api` | 网络 | ✅ enabled | Gateway API CRD + ALB GatewayClass |
+| `alb-ingress-controller` | 网络 | ✅ enabled | 基于阿里云 ALB 的 K8s Ingress 实现 |
+| `metrics-server` | 监控 | ❌ disabled | HPA / `kubectl top` |
+| `arms-prometheus` | 监控 | ❌ disabled | 阿里云 Prometheus（ARMS） |
+| `ack-node-problem-detector` | 监控 | ❌ disabled | 节点/Pod 异常事件上报 |
+| `alicloud-monitor-controller` | 告警 | ❌ disabled | 云监控告警 + 事件中心 |
+| `logtail-ds` | 日志 | ❌ disabled | SLS 日志采集 DaemonSet |
+| `security-inspector` | 安全 | ❌ disabled | 集群安全巡检 |
+| `gatekeeper` | 安全 | ❌ disabled | OPA 策略准入 |
+| `ack-virtual-node` | 调度 | ❌ disabled | 虚拟节点（ECI 弹性） |
+| `ack-kubernetes-elastic-workload` | 调度 | ❌ disabled | 弹性工作负载 |
+
+> **不在 addons 列表**：网络插件（terway/flannel）、CSI、CoreDNS、kube-proxy 由 ACK 创建集群时按 provider 后端默认安装，不显式声明。
+>
+> 完整清单：<https://help.aliyun.com/zh/ack/product-overview/component-overview>
+
+## destroy 行为
+
+集群资源里写了 `delete_options`（provider v1.223.2+）：
+- `SLB` → `delete`（Nginx Ingress 创建的 SLB 一并清理）
+- `ALB` → `delete`（ALB Ingress / Gateway API 创建的 ALB，**官方默认 retain**，本模板显式改成 delete）
+
+> 必须先 `terraform apply` 写入集群配置后，再 `destroy` 才生效。残留 Pod ENI、NAT 网关 不在管辖内，destroy 卡 vSwitch 时仍需手动到控制台清。
 
 ## 输出
 

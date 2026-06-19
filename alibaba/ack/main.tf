@@ -80,6 +80,17 @@ resource "alicloud_cs_managed_kubernetes" "this" {
       config = addons.value.config
     }
   }
+
+  # destroy 时连带清理集群拉起的 SLB / ALB，避免残留 ENI 把 vSwitch 锁住
+  # （需先 apply 写入集群配置；ALB 默认 retain，必须显式改 delete）
+  delete_options {
+    delete_mode   = "delete"
+    resource_type = "SLB"
+  }
+  delete_options {
+    delete_mode   = "delete"
+    resource_type = "ALB"
+  }
 }
 
 # ----------------------------------------------------------------------------
