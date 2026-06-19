@@ -35,7 +35,7 @@ variable "zone_ids" {
 variable "cluster_name" {
   description = "集群名称"
   type        = string
-  default     = "acs-demo"
+  default     = "makeit"
 }
 
 variable "vpc_cidr" {
@@ -97,6 +97,8 @@ variable "addons" {
     { name = "arms-prometheus" },        # 阿里云 Prometheus（ARMS）
     { name = "alibaba-log-controller" }, # 阿里云 Prometheus（ARMS）
     { name = "managed-coredns" },        # 阿里云 Prometheus（ARMS）
+    { name = "csi-provisioner" },
+    { name = "csi-plugin" },
 
     { name = "ack-node-problem-detector", disabled = true }, # 节点/Pod 异常事件上报
 
