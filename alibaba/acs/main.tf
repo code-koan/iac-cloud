@@ -11,15 +11,13 @@ terraform {
     }
   }
 
-  # 远程 state — tfstate.dev (GitHub 账号鉴权)
-  # TF_HTTP_PASSWORD=<GitHub PAT> 传入
-  backend "http" {
-    address        = "https://api.tfstate.dev/github/v1/alibaba-acs"
-    lock_address   = "https://api.tfstate.dev/github/v1/alibaba-acs/lock"
-    unlock_address = "https://api.tfstate.dev/github/v1/alibaba-acs/lock"
-    lock_method    = "PUT"
-    unlock_method  = "DELETE"
-    username       = "code-koan/iac-cloud"
+  # 远程 state — 阿里云 OSS（凭据走 ALICLOUD_ACCESS_KEY / ALICLOUD_SECRET_KEY 环境变量）
+  backend "oss" {
+    bucket  = "makeit-agi"
+    prefix  = "iac/state/acs"
+    key     = "terraform.tfstate"
+    region  = "cn-hongkong"
+    encrypt = true
   }
 }
 
