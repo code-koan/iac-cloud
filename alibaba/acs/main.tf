@@ -61,6 +61,7 @@ resource "terraform_data" "validate" {
 resource "alicloud_vpc" "main_vpc" {
   vpc_name   = "${var.cluster_name}-vpc"
   cidr_block = var.vpc_cidr
+  # enable_ipv6 = true
 }
 
 resource "alicloud_vswitch" "cluster_vswitch" {

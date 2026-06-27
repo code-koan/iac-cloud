@@ -8,6 +8,7 @@
 |------|------|
 | [ack.md](ack.md) | ACK 托管版 K8s 集群（带可选默认 / GPU 节点池） |
 | [acs.md](acs.md) | ACS Serverless K8s 集群（标准 / Pro 可选） |
+| [rds-pg-serverless.md](rds-pg-serverless.md) | RDS PostgreSQL Serverless（按 RCU 计费，仅 VPC 内网） |
 | `alibaba/ecs-gpu/` | GPU ECS 单机模板（VPC + 安全组 + Docker user_data，无单独设计文档） |
 
 ## 共性约定
