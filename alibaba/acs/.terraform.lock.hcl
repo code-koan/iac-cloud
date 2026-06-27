@@ -5,6 +5,7 @@ provider "registry.terraform.io/aliyun/alicloud" {
   version     = "1.281.0"
   constraints = "~> 1.230"
   hashes = [
+    "h1:6rQkgWpG+5qVPcaEEVrLRY24uuC614d0wv890zuGllE=",
     "h1:Esca78OBxKolY8gMaQugMp3RieuOavfo68pRNBHZtps=",
     "zh:05d77855f094dce7fbab9705a1c73d682e3aa3abd38b2b482c9e6ac0b3f27b39",
     "zh:1b1342172987dc6bdfe94f2f9cdd65ff81e0d921c65d41cd94a719e392555669",
@@ -25,6 +26,7 @@ provider "registry.terraform.io/hashicorp/local" {
   constraints = "~> 2.5"
   hashes = [
     "h1:9rBZCMNpxKwMlRbWH2QpwD3kqUCAejdOZQ/aiiDObXQ=",
+    "h1:m24fjcInWvTVZ1XSo2MaNuKPe+X/gfG8SIi09rA7a7M=",
     "zh:0baa4566cf77f1ff52f4293d1c8536202dd23edc197c3196413a28343c3ac3a0",
     "zh:16b5559c3c07088ddad11a9bb9e9c0799999363c2958e9a5be2bcbbf2cd9ca64",
     "zh:197c79015a10d1cce904a8ea722cbc750c42aeae2da53f44a6a0751d9fd1aa90",
